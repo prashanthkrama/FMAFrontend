@@ -5,13 +5,29 @@
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"filename": {
+				"type": "String",
+				"defaultValue": "EmployeeDetails2.txt"
+			},
+			"srccontainername": {
+				"type": "String",
+				"defaultValue": "democontainer1"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "EmployeeDetails.txt",
-				"container": "democontainer1"
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().srccontainername",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

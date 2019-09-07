@@ -1,0 +1,35 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EmpID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EmpName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DeptID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "EmployeeDetails"
+		}
+	}
+}

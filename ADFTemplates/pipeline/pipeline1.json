@@ -23,12 +23,12 @@
 				}
 			}
 		],
-		"parameters": {
+		"variables": {
 			"names": {
-				"type": "array",
+				"type": "Array",
 				"defaultValue": [
 					"prashanth",
-					"Varun"
+					"varun"
 				]
 			}
 		},

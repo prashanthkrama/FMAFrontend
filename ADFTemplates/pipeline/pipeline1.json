@@ -17,7 +17,14 @@
 							"name": "aaaa",
 							"type": "SetVariable",
 							"dependsOn": [],
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "names",
+								"value": {
+									"value": "@item().names",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}

@@ -24,7 +24,7 @@
 			}
 		],
 		"parameters": {
-			"name": {
+			"names": {
 				"type": "array",
 				"defaultValue": [
 					"prashanth",

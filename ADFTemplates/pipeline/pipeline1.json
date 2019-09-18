@@ -14,7 +14,7 @@
 					},
 					"activities": [
 						{
-							"name": "Set Variable1",
+							"name": "aaaa",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": []

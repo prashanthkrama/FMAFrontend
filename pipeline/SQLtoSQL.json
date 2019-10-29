@@ -1,0 +1,153 @@
+{
+	"name": "SQLtoSQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach_5it",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.cw_items",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy_5it",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "dbo.@{item().source.table}"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.@{item().destination.table}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource"
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"translator": {
+									"value": "@item().copyActivity.translator",
+									"type": "Expression"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceDataset_5it",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": "@item().source.table"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DestinationDataset_5it",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": "@item().destination.table"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"cw_items": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"source": {
+							"table": "dept"
+						},
+						"destination": {
+							"table": "Dept"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "Int32",
+											"name": "dno"
+										},
+										"sink": {
+											"type": "Int32",
+											"name": "dno"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"name": "dname"
+										},
+										"sink": {
+											"type": "String",
+											"name": "dname"
+										}
+									}
+								]
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "emp"
+						},
+						"destination": {
+							"table": "Emp"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "Int32",
+											"name": "Eno"
+										},
+										"sink": {
+											"type": "Int32",
+											"name": "Eno"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"name": "Ename"
+										},
+										"sink": {
+											"type": "String",
+											"name": "Ename"
+										}
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

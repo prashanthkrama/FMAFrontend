@@ -1,0 +1,25 @@
+{
+	"name": "TgtData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQLTgtDB",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"tgt_table": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().tgt_table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

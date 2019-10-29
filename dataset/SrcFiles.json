@@ -1,0 +1,32 @@
+{
+	"name": "SrcFiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "csvStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SrcFiles": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().SrcFiles",
+					"type": "Expression"
+				},
+				"container": "csv-blobcontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,87 @@
+{
+	"name": "multipleLoad",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.SrcandTgt",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "SrcFiles",
+									"type": "DatasetReference",
+									"parameters": {
+										"SrcFiles": "@item().source"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "tgtTables",
+									"type": "DatasetReference",
+									"parameters": {
+										"Tables": "@item().sink"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SrcandTgt": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"source": "Dept",
+						"sink": "Dept"
+					},
+					{
+						"source": "Emp",
+						"sink": "Emp"
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

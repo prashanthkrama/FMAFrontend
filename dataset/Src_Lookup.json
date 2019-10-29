@@ -1,0 +1,13 @@
+{
+	"name": "Src_Lookup",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TargetDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

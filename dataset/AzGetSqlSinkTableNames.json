@@ -1,0 +1,13 @@
+{
+	"name": "AzGetSqlSinkTableNames",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SolDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

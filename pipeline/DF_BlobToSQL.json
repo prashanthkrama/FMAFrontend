@@ -1,0 +1,64 @@
+{
+	"name": "DF_BlobToSQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.DFSource",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "DF_Activity",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "DF_Activity",
+									"type": "DataFlowReference",
+									"datasetParameters": {
+										"source1": {
+											"Src": "@item().source.filename"
+										}
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"DFSource": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"source": {
+							"fileName": "Dept.csv"
+						}
+					},
+					{
+						"source": {
+							"fileName": "Emp.csv"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

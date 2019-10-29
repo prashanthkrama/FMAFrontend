@@ -1,0 +1,96 @@
+{
+	"name": "BlobToSqlMultiLoad_AutoCreate",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEachSource",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.SourceFromBlob",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "CopydataFromBlobToSql",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Source_NewContainer",
+									"type": "DatasetReference",
+									"parameters": {
+										"Src_Files": "@item().source.fileName"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "TargetDb",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SourceFromBlob": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"source": {
+							"fileName": "Dept.csv"
+						}
+					},
+					{
+						"source": {
+							"fileName": "Emp.csv"
+						}
+					},
+					{
+						"source": {
+							"fileName": "EmpDetails.csv"
+						}
+					},
+					{
+						"source": {
+							"fileName": "SiteDetails.csv"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

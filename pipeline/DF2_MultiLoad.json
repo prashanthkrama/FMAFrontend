@@ -1,0 +1,74 @@
+{
+	"name": "DF2_MultiLoad",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.Src2",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "dataflow2",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "dataflow2",
+									"type": "DataFlowReference",
+									"datasetParameters": {
+										"source1": {
+											"src": "@item().source.fileName"
+										},
+										"sink1": {
+											"tgt": "@item().destination.table"
+										}
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"concurrency": 1,
+		"parameters": {
+			"Src2": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"source": {
+							"fileName": "Dept.csv"
+						},
+						"destination": {
+							"table": "department"
+						}
+					},
+					{
+						"source": {
+							"fileName": "Emp.csv"
+						},
+						"destination": {
+							"table": "employee"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

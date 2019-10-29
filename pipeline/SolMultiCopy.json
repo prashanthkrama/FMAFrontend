@@ -1,0 +1,159 @@
+{
+	"name": "SolMultiCopy",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetMetadataSourceFileNames",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "SourceFileNames",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetMetadataSourceFileNames",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetMetadataSourceFileNames').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "LookupTableNames",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT TABLE_SCHEMA, TABLE_NAME FROM SinkTablesForFiles \nWHERE SourceFileName = '\n, pipeline().parameters.PipeLineParameter\n,item().name\n,pipeline().parameters.PipeLineParameter)",
+										"type": "Expression"
+									}
+								},
+								"dataset": {
+									"referenceName": "SinkTablesLookupTables",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "LookupTableNames",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "\nTRUNCATE TABLE @{activity('LookupTableNames').output.value[0].TABLE_NAME}",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceFilesFromBlob",
+									"type": "DatasetReference",
+									"parameters": {
+										"BlobFiles": "@item().name"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SinkTablesSql",
+									"type": "DatasetReference",
+									"parameters": {
+										"TableName": {
+											"value": "@activity('LookupTableNames').output.value[0].TABLE_NAME",
+											"type": "Expression"
+										},
+										"SchemaName": {
+											"value": "@activity('LookupTableNames').output.value[0].TABLE_SCHEMA",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"PipeLineParameter": {
+				"type": "string",
+				"defaultValue": "'"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

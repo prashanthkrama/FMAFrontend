@@ -1,0 +1,19 @@
+{
+	"name": "Avro1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "csvStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Avro",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "userdata1.avro",
+				"container": "avrodatasets"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

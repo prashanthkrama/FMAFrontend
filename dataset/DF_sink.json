@@ -1,0 +1,17 @@
+{
+	"name": "DF_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TestDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "test3"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

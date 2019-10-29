@@ -1,0 +1,103 @@
+{
+	"name": "NewPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEachActivity",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.MainParameter",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "BlobtoSQL",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "newcontainer//@{item().source.filename}"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.@{item().destination.table}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*.*"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "SrcData",
+									"type": "DatasetReference",
+									"parameters": {
+										"Src_file": "@item().source.filename"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "TgtData",
+									"type": "DatasetReference",
+									"parameters": {
+										"tgt_table": "@item().destination.table"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"MainParameter": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"source": {
+							"filename": "Dept.csv"
+						},
+						"destination": {
+							"table": "Dept"
+						}
+					},
+					{
+						"source": {
+							"filename": "Emp.csv"
+						},
+						"destination": {
+							"table": "Emp"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

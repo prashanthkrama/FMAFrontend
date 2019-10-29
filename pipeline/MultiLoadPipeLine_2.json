@@ -1,0 +1,144 @@
+{
+	"name": "MultiLoadPipeLine_2",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.SrcAndTgt",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "newcontainer//@{item().source.filename}"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.@{item().destination.table}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "TRUNCATE TABLE @{item().destination.table}",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DelimitedText3",
+									"type": "DatasetReference",
+									"parameters": {
+										"src": "@item().source.filename"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlTable4",
+									"type": "DatasetReference",
+									"parameters": {
+										"table": {
+											"value": "@item().destination.table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SrcAndTgt": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"source": {
+							"fileName": "Dept.csv"
+						},
+						"destination": {
+							"table": "Dept"
+						}
+					},
+					{
+						"source": {
+							"fileName": "Emp.csv"
+						},
+						"destination": {
+							"table": "emp"
+						}
+					},
+					{
+						"source": {
+							"fileName": "EmpDetails.csv"
+						},
+						"destination": {
+							"table": "EmpDetails"
+						}
+					},
+					{
+						"source": {
+							"fileName": "FileA.csv"
+						},
+						"destination": {
+							"table": "FileA"
+						}
+					},
+					{
+						"source": {
+							"fileName": "FileB.csv"
+						},
+						"destination": {
+							"table": "FileB"
+						}
+					},
+					{
+						"source": {
+							"fileName": "FileC.csv"
+						},
+						"destination": {
+							"table": "FileC"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,50 @@
+{
+	"name": "tgtTables1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NewDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SiteName",
+				"type": "varchar"
+			},
+			{
+				"name": "dno",
+				"type": "varchar"
+			},
+			{
+				"name": "dname",
+				"type": "varchar"
+			},
+			{
+				"name": "location",
+				"type": "varchar"
+			},
+			{
+				"name": "new",
+				"type": "varchar"
+			},
+			{
+				"name": "Eno",
+				"type": "varchar"
+			},
+			{
+				"name": "Ename",
+				"type": "varchar"
+			},
+			{
+				"name": "Sal",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "final_table"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

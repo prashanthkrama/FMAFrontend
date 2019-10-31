@@ -1,0 +1,175 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.SrcAndTgt",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "newcontainer//@{item().source.filename}"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.@{item().destination.table}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "TRUNCATE TABLE @{item().destination.table}",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DelimitedText3",
+									"type": "DatasetReference",
+									"parameters": {
+										"src": "@item().source.filename"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlTable4",
+									"type": "DatasetReference",
+									"parameters": {
+										"table": {
+											"value": "@item().destination.table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-19.centralindia.logic.azure.com:443/workflows/0b22e596d8814ef2be3f902f506a97aa/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IgxUu-iA_NKvSvR4qKLGCnZXZGBq-4td18QcRue8tTE",
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "{\n   \"DataFactoryName\": \"@{pipeline().DataFactory}\",\n   \"PipelineName\": \"@{pipeline().Pipeline}\",\n   \"Subject\": \"An error has occurred!\",\n   \"ErrorMessage\": \"The ADF pipeline has crashed! Please check the logs.\",\n   \"EmailTo\": \"harshitha0624@outlook.com\"\n}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SrcAndTgt": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"source": {
+							"fileName": "Dept.csv"
+						},
+						"destination": {
+							"table": "Dept"
+						}
+					},
+					{
+						"source": {
+							"fileName": "Emp.csv"
+						},
+						"destination": {
+							"table": "emp"
+						}
+					},
+					{
+						"source": {
+							"fileName": "EmpDetails.csv"
+						},
+						"destination": {
+							"table": "EmpDetails"
+						}
+					},
+					{
+						"source": {
+							"fileName": "FileA.csv"
+						},
+						"destination": {
+							"table": "FileA"
+						}
+					},
+					{
+						"source": {
+							"fileName": "FileB.csv"
+						},
+						"destination": {
+							"table": "FileB"
+						}
+					},
+					{
+						"source": {
+							"fileName": "FileC.csv"
+						},
+						"destination": {
+							"table": "FileC"
+						}
+					}
+				]
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
